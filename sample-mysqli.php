@@ -1,7 +1,9 @@
 <?php
 //sample-mysqli.php
 
-//1.DB接続
+    //---------------
+    //1. DB接続
+    //---------------
 //mysqli(HOST , USER_NAME , PASSWORD , DB_NAME)の順番
 $db = new mysqli("localhost" , "tuemori" , "eccMyAdmin" , "tuemori");
 
@@ -9,8 +11,39 @@ try {
 
     //DBへの接続をチェック
     if( $db -> connect_error ){
-        throw new Exception( "DB Connect Error" );
+        throw new Exception( "DB Connect Error");
     }
+
+    //DBとのデータの送受信で使用する文字エンコードの指定
+    $db -> set_charset("utf8");
+
+    //---------------
+    //2. SQLの準備と実行
+    //---------------
+    $table = "php1_zip";
+    $sql = "SELECT * FROM {$table} LIMIT 100";
+
+    //SQLの実行
+    if( ! $result = $db -> query($sql) ){
+        throw new Exception( "SQL Query Error >> {$sql} " );
+    }
+    var_dump($result);
+
+    //---------------
+    //3. SQLの結果を整形
+    //---------------
+    $address =[];
+    while( $row = $result -> fetch_object() ){
+        $address[] = $row; 
+    }
+
+    var_dump($address);
+
+    //---------------
+    //4. SQLの接続を閉じる
+    //---------------
+    $db -> close();
+
 }
 catch(Exception $error){
     print $error -> getMessage();
