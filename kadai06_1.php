@@ -135,6 +135,7 @@ catch( Exception $error ){
           <div class="flex justify-center">
             <button type="submit" class="w-40 h-10 text-white text-lg bg-indigo-600 hover:bg-indigo-500 rounded-md">検索</button>
           </div>
+
         </div>
 
         </form>
