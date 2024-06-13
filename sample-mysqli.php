@@ -60,5 +60,27 @@ catch(Exception $error){
 </head>
 <body>
     <h1>PHPでデータベースを扱う</h1>
+
+    <!-- テーブルタグで、$address の情報を表示 -->
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>ZIP</th>
+            <th>PREF</th>
+            <th>CITY</th>
+            <th>TOWN</th>
+        </tr>
+
+        <?php foreach( $address as $value ): ?>
+            <tr>
+                <td><?= $value -> id ?></td>
+                <td><?= $value -> zip ?></td>
+                <td><?= $value -> pref ?></td>
+                <td><?= $value -> city ?></td>
+                <td><?= $value -> town ?></td>
+            </tr>
+        <?php endforeach ?>
+    </table>
 </body>
 </html>
