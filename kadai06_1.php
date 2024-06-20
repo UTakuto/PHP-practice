@@ -126,7 +126,7 @@ catch( Exception $error ){
                 <option value="">すべての商品</option>
 
                 <?php foreach($categories as $category): ?>
-                  <option value="<?= $category -> id?>"><?= $category -> name ?></option>
+                  <option value="<?= $category -> id?><?php if($category -> id) : ?> selected <?php endif ?>"><?= $category -> name ?></option>
                 <?php endforeach ?>
               </select>
             </div>
@@ -163,7 +163,7 @@ catch( Exception $error ){
               <td class="h-10 px-6 py-5"><?= $product -> name ?></td>
               <td class="h-10 px-6 py-5"><?= $product -> price ?></td>
               <td class="h-10 text-center px-6 py-5">
-                <a href="kadai07_1.php?product_code<?= $product -> code ?>" class="text-pink-600 hover:text-pink-400">詳細</a>
+                <a href="kadai07_1.php?product_code=<?=$product -> code?>" class="text-pink-600 hover:text-pink-400">詳細</a>
               </td>
             </tr>
           <?php endforeach ?>

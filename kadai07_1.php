@@ -1,5 +1,77 @@
 <?php
 
+require_once "config.php";
+require_once "utility.php";
+
+// [GET] product_code
+$productCode = filter_input(INPUT_GET , "product_code");
+// var_dump($productCode);
+
+try{
+
+  //product_codeがない場合は、kadai06_1.phpへリダイレクト
+  if( ! $productCode ){
+    redirect( "kadai06_1.php" );
+  }
+
+  //---------------
+  //1. DB接続
+  //---------------
+  //mysqli(HOST , USER_NAME , PASSWORD , DB_NAME)の順番
+  $db = new mysqli(DB_HOST , DB_USER , DB_PASS , DB_NAME);
+
+  if( $db -> connect_error ){
+    throw new Exception( "DB Connect Error" );
+  }
+
+  $db -> set_charset( "utf8" );
+
+  $table = TB_PRODUCT;
+  $sql = " 
+    SELECT
+      code,
+      {$table}.name,
+      price,
+      category_id,
+      php1_categories.name AS category_name
+    FROM 
+      {$table} 
+    LEFT OUTER JOIN
+      php1_categories
+      ON
+        {$table}.category_id = php1_categories.id
+    WHERE 
+      {$table}.code = ?
+  ";
+
+  //SQLを実行するためのプリペアードステートメントの準備
+  $stmt = $db -> prepare($sql);
+
+  // ? (パラメータ)へ値をバインドする
+  // $productCode = "product_code";
+  $stmt -> bind_param( "s" , $productCode );
+  
+  //プリペアードステートメントのSQLを実行
+  $stmt -> execute();
+
+  //プリペアードステートメントの結果を取り出す
+  $result = $stmt -> get_result();
+
+  //プリペアードステートメントを閉じる
+  $stmt -> close();
+
+  $product = $result -> fetch_object();
+
+  //DBを閉じる
+  $db -> close();
+
+  var_dump($product);
+
+}catch( Exception $error ){
+  print $error -> getMessage();
+}
+
+
 
 
 ?>
@@ -32,7 +104,7 @@
     <h3 class="text-xl border-b-2 border-teal-400 pb-2 mb-10">商品の詳細</h3>
 
     <div class="flex flex-col sm:flex-row justify-end mb-10">
-      <a href="#" class="text-white text-center leading-10 bg-gray-600 px-10 hover:bg-gray-500 rounded-md">一覧へ戻る</a>
+      <a href="kadai06_1.php" class="text-white text-center leading-10 bg-gray-600 px-10 hover:bg-gray-500 rounded-md">一覧へ戻る</a>
       <a href="#" class="text-white text-center leading-10 bg-red-700 px-10 px-10 mx-5 hover:bg-red-600 rounded-md">削除する</a>
       <!--kadai10_1-->
       <!--
@@ -54,24 +126,24 @@
           <div class="mb-5">
             <div class="w-6/12">
               <p class="text-gray-500 text-left uppercase tracking-wider">code</p>
-              <p class="px-2 py-2 border rounded-md">商品のコード</p>
+              <p class="px-2 py-2 border rounded-md"><?= $product -> code ?></p>
             </div>
           </div>
 
           <div class="flex justify-between mb-5">
             <div class="flex-grow mr-10">
               <p class="text-gray-500 text-left uppercase tracking-wider">category</p>
-              <p class="bg-white px-2 py-2 border  rounded-md">商品のカテゴリー名</p>
+              <p class="bg-white px-2 py-2 border  rounded-md"><?= $product -> category_name ?></p>
             </div>
             <div class="w-4/12">
               <p class="text-gray-500 text-left uppercase tracking-wider">price</p>
-              <p class="bg-white px-2 py-2 border  rounded-md">商品の料金</p>
+              <p class="bg-white px-2 py-2 border  rounded-md">¥<?= $product -> price ?></p>
             </div>
           </div>
 
           <div>
             <p class="text-gray-500 text-left uppercase tracking-wider">name</p>
-            <p class="bg-white text-lg px-2 py-2 border  rounded-md">商品の名前</p>
+            <p class="bg-white text-lg px-2 py-2 border  rounded-md"><?= $product -> name ?></p>
           </div>
         </div>
 
