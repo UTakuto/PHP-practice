@@ -56,7 +56,10 @@ try{
 
   //プリペアードステートメントの結果を取り出す
   $result = $stmt -> get_result();
-
+  if( !$result -> num_rows ){
+    redirect( "kadai06_1.php" );
+  }
+  
   //プリペアードステートメントを閉じる
   $stmt -> close();
 
@@ -68,7 +71,8 @@ try{
   var_dump($product);
 
 }catch( Exception $error ){
-  print $error -> getMessage();
+
+  // print $error -> getMessage();
 }
 
 
